@@ -43,9 +43,9 @@ This Node.js project is designed to gather movie information from JSON files and
    
 ### Usage
 After the installation 
-Starting the Server Run the following command to start the API server:
+Run the app to start gathering and broadcasting to different channels:
 ```bash
-npm start
+node app
 ```
 Once you run the service, it will directly load all the movies in movies_store and broadcast it to the enabled channels
    
