@@ -1,15 +1,17 @@
 const { WebClient } = require('@slack/web-api');
-const slackClient = new WebClient(process.env.SLACK_TOKEN);
 const fs = require('fs');
 const path = require('path');
 const logFilePath = path.join(__dirname, 'movies.log');
 const axios = require('axios');
-const apiBaseURL = 'http://localhost:3000';
-const broadcastToSlack = async (message) => {
+require('dotenv').config();
+
+
+const broadcastToSlack = async (data) => {
     try {
+        const slackClient = new WebClient(process.env.SLACK_TOKEN);
         await slackClient.chat.postMessage({
             channel: process.env.SLACK_CHANNEL,
-            text: message
+            text: broadcastMessage(data)
         });
     } catch (error) {
         console.error('Error posting message to Slack:', error);
@@ -17,9 +19,10 @@ const broadcastToSlack = async (message) => {
 };
 
 const broadcastToDatabase = async (data) => {
+
     async function getToken() {
         try {
-            const response = await axios.get(`${apiBaseURL}/get-token`);
+            const response = await axios.get(`${process.env.DATABASE_MOVIE_API_LINK}/get-token`);
             return response.data.token;
         } catch (error) {
             console.error('Error getting token:', error);
@@ -33,8 +36,8 @@ const broadcastToDatabase = async (data) => {
     }
 
     try {
-        await axios.post(`${apiBaseURL}/movies`, data, {
-            headers: { Authorization: `Bearer ${token}` }
+        await axios.post(`${process.env.DATABASE_MOVIE_API_LINK}/movies`, JSON.stringify(data), {
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": `application/json` }
         });
         console.log('Movie data successfully broadcasted to API.');
     } catch (error) {
@@ -46,15 +49,17 @@ const broadcastToUI = async (data) => {
     // WebSocket logic
 };
 const broadcastToConsole = async (data) => {
-    console.log(`${new Date().toISOString()} - New Movie: ${JSON.stringify(data)}\n`);
+    console.log(broadcastMessage(data));
 };
 const logData = async (data) => {
-    const logEntry = `${new Date().toISOString()} - New Movie: ${JSON.stringify(data)}\n`;
-    fs.appendFile(logFilePath, logEntry, (err) => {
+    fs.appendFile(logFilePath, broadcastMessage(data), (err) => {
         if (err) console.error('Error writing to log file:', err);
     });
 };
 
+const broadcastMessage = (data) => {
+    return `${new Date().toISOString()} - New Movie: ${JSON.stringify(data)}\n`;
+}
 module.exports = {
     broadcastToSlack, broadcastToUI, broadcastToDatabase, logData, broadcastToConsole
 }

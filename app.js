@@ -1,6 +1,7 @@
 const {gatherMovieData} = require('./gatherData');
 const movieFiles = ['movie1.json', 'movie2.json', 'movie3.json', 'movie4.json']; //add files here
 const {broadcastToSlack, broadcastToConsole, broadcastToDatabase, logData} = require('./broadCasters');
+require('dotenv').config();
 
 const broadcastData = async (data) => {
     if (process.env.ENABLE_SLACK_BROADCAST === 'true') {
@@ -18,8 +19,11 @@ const broadcastData = async (data) => {
     // ... other conditions for different destinations ...
 };
 
-const movies = await gatherMovieData(movieFiles);
-movies.forEach(async (movie) => {
-    await broadcastData(movie);
-});
-
+(async () => {
+    const movies = await gatherMovieData(movieFiles);
+    for (const movie of movies) {
+        await broadcastData(movie);
+    }
+})()
+    .then(() => console.log('Movie processing completed.'))
+    .catch(error => console.error('An error occurred:', error));
