@@ -1,0 +1,19 @@
+{
+  "name": "movie-api-gathering",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "no test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@slack/web-api": "^6.10.0",
+    "axios": "^1.6.2",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "sequelize": "^6.35.1"
+  }
+}
