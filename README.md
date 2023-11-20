@@ -21,7 +21,7 @@ This Node.js project is designed to gather movie information from JSON files and
 
 1. **Clone the repository:**
 ```bash
-  git clone https://github.com/hussamkurd/movie-api-gathering
+  git clone https://github.com/hussamkurd/movie-api-gathering.git
   cd movie-api-gathering
 ```
 2. **Update the .env file variables:** 
